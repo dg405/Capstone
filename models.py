@@ -107,7 +107,7 @@ def associationupdate(movieid, actorid):
 Association table linking movies and actors in Performances 
 '''
 
-Performance = db.Table('performances', db.Model.metadata,
+Performance = db.Table('performances',
   db.Column('Movie_id', db.Integer, db.ForeignKey('movies.id')), 
   db.Column('Actor_id', db.Integer, db.ForeignKey('actors.id')), 
   )
