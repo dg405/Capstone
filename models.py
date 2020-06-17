@@ -12,7 +12,7 @@ from sqlalchemy.dialects import postgresql
 database_path = os.environ['DATABASE_URL']
 
 #uncomment to run locally
-#database_path = 'postgresql://postgres:bowimi321@localhost:5432/agency'
+#database_path = 'postgresql://postgres:password@localhost:5432/agency'
 
 db = SQLAlchemy()
 
