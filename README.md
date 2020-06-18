@@ -39,7 +39,7 @@ createdb agencytest
 
 ## Running the Server Locally
 
-From within the directory first ensure you are working using your created virtual environment and have changed the `database_path` in `models.py` to reflect your local database path.
+From within the directory first ensure you are using your created virtual environment and have changed the `database_path` in `models.py` to reflect your local database path.
 
 To run the server, execute:
 
@@ -50,7 +50,7 @@ flask run
 ```
 
 ## Testing
-To run the tests, run
+To run the tests, run:
 ```
 python test_app.py
 ```
@@ -277,9 +277,11 @@ The following roles have been assigned the permissions listed below:
 - post:movies
 - delete:movies
 
+Bearer tokens for all three roles are available in the `test_app.py` file and expire after 24 hours (limit set by Auth0).
+
 ## Authors
 Dan Ghadimi
 
 ## Acknowledgements 
-The awesome team at Udacity and especially Coach Caryn for the lectures!
+The awesome team at Udacity!
  
