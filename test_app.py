@@ -17,7 +17,7 @@ class CapTestCase(unittest.TestCase):
 
         self.app = create_app()
         self.client = self.app.test_client
-        self.database_path = 'postgresql://postgres:bowimi321@localhost:5432/agencytest'
+        self.database_path = 'postgresql://postgres:password@localhost:5432/agencytest'
         setup_db(self.app, self.database_path)
         db_drop_and_create_all()
         db_init_records()
