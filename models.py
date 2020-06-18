@@ -9,11 +9,11 @@ from sqlalchemy.dialects import postgresql
 
 
 
-#database_path = os.environ['DATABASE_URL']
+database_path = os.environ['DATABASE_URL']
 
 #uncomment to run locally
-#database_path = 'postgresql://postgres:bowimi321@localhost:5432/agency'
-database_path = 'postgres://qkemyejqagfnpt:ca6391feb2aa6ecd86b8cc4dffd4de1f554667ef0d2b3de77211631509cf90ca@ec2-34-202-88-122.compute-1.amazonaws.com:5432/dbulfli3d8a6t3'
+#database_path = 'postgresql://postgres:password@localhost:5432/agency'
+
 
 db = SQLAlchemy()
 
