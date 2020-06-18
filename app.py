@@ -14,7 +14,7 @@ def create_app(test_config=None):
     setup_db(app)
     
     #uncomment to start a new database on app refresh
-    db_drop_and_create_all()
+    #db_drop_and_create_all()
 
     #uncomment to insert test data
     db_init_records()
