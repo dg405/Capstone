@@ -12,27 +12,29 @@ def create_app(test_config=None):
 
     app = Flask(__name__)
     setup_db(app)
-    
-    #uncomment to start a new database on app refresh
-    #db_drop_and_create_all()
 
-    #uncomment to insert test data
+    # uncomment to start a new database on app refresh
+    # db_drop_and_create_all()
+
+    # uncomment to insert test data
     db_init_records()
-    
+
     CORS(app)
-    
+
     @app.after_request
     def after_request(response):
-        response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization,true')
-        response.headers.add('Access-Control-Allow-Methods', 'GET,PATCH,POST,DELETE,OPTIONS')
+        response.headers.add(
+            'Access-Control-Allow-Headers',
+            'Content-Type,Authorization,true')
+        response.headers.add(
+            'Access-Control-Allow-Methods',
+            'GET,PATCH,POST,DELETE,OPTIONS')
         return response
-
-
 
     '''
     API Endpoints
     '''
-    #GET ENDPOINTS
+    # GET ENDPOINTS
 
     @app.route('/')
     def main():
@@ -47,14 +49,14 @@ def create_app(test_config=None):
 
         actors = []
 
-        for actor in selection: 
+        for actor in selection:
             actors.append(actor.format())
 
         if len(actors) == 0:
             abort(404)
 
         return jsonify({
-            'status': True, 
+            'status': True,
             'actors': actors
         })
 
@@ -72,11 +74,11 @@ def create_app(test_config=None):
             abort(404)
 
         return jsonify({
-            'status': True, 
+            'status': True,
             'movies': movies
         })
 
-    #DELETE ENPOINTS
+    # DELETE ENPOINTS
     @app.route('/actors/<id>', methods=['DELETE'])
     @requires_auth('delete:actors')
     def delete_actor(payload, id):
@@ -84,16 +86,16 @@ def create_app(test_config=None):
 
         if not selection:
             abort(404)
-        
+
         try:
             selection.delete()
-        
-        except:
+
+        except BaseException:
             abort(422)
             print('it could not be deleted')
 
         return jsonify({
-            'status': True, 
+            'status': True,
             'actor': id
         })
 
@@ -104,20 +106,20 @@ def create_app(test_config=None):
 
         if not selection:
             abort(404)
-        
+
         try:
             selection.delete()
-        
-        except:
+
+        except BaseException:
             abort(422)
             print('it could not be deleted')
 
         return jsonify({
-            'status': True, 
+            'status': True,
             'movie': id
         })
 
-    #POST ENPOINTS
+    # POST ENPOINTS
     @app.route('/actors', methods=['POST'])
     @requires_auth('post:actors')
     def post_actor(payload):
@@ -133,16 +135,15 @@ def create_app(test_config=None):
                 gender=res['gender']
             )
             actor.insert()
-        
-        except:
+
+        except BaseException:
             abort(422)
-            print('it could not be added') 
-            
+            print('it could not be added')
+
         return jsonify({
-            'status': True, 
+            'status': True,
             'actor': [actor.format()]
         })
-
 
     @app.route('/movies', methods=['POST'])
     @requires_auth('post:movies')
@@ -158,64 +159,62 @@ def create_app(test_config=None):
                 release_date=res['release_date'],
                 actor_id=res['actor_id']
             )
-            
+
             movie.insert()
 
-        except:
-            print('movie could not be added') 
+        except BaseException:
+            print('movie could not be added')
             abort(422)
-            
-        #fill association table
+
+        # fill association table
         try:
             index = 0
             for x in res['actor_id']:
-                #if user inputted an incorrect ID it will skip it and input the rest
+                # if user inputted an incorrect ID it will skip it and input
+                # the rest
                 try:
                     actor = Actor.query.get(res['actor_id'][index])
                     associationupdate(movie.id, actor.id)
                     index += 1
-                except:
+                except BaseException:
                     index += 1
-                    
 
-        except:
-            print('performance could not be added') 
+        except BaseException:
+            print('performance could not be added')
             abort(422)
-            
 
         return jsonify({
-            'status': True, 
+            'status': True,
             'movie': [movie.format()]
         })
 
-
-    #PATCH ENPOINTS 
+    # PATCH ENPOINTS
     @app.route('/actors/<id>', methods=['PATCH'])
     @requires_auth('patch:actors')
     def patch_actor(payload, id):
         res = request.get_json()
 
-        if not res: 
+        if not res:
             abort(404)
-        
+
         actor = Actor.query.get(id)
 
-        try: 
-            if 'name' in res: 
+        try:
+            if 'name' in res:
                 actor.name = res['name']
-            if 'age' in res: 
+            if 'age' in res:
                 actor.age = res['age']
-            if 'gender' in res: 
+            if 'gender' in res:
                 actor.gender = res['gender']
-            
+
             actor.update()
-        
-        except: 
+
+        except BaseException:
             print('could not create object')
             abort(422)
 
         return jsonify({
-            'status': True, 
+            'status': True,
             'actor': [actor.format()]
         })
 
@@ -224,27 +223,27 @@ def create_app(test_config=None):
     def patch_movie(payload, id):
         res = request.get_json()
 
-        if not res: 
+        if not res:
             abort(404)
-        
+
         movie = Movie.query.get(id)
 
-        try: 
-            if 'title' in res: 
+        try:
+            if 'title' in res:
                 movie.title = res['title']
-            if 'release_date' in res: 
+            if 'release_date' in res:
                 movie.release_date = res['release_date']
-            if 'actor_id' in res: 
+            if 'actor_id' in res:
                 movie.actor_id = res['actor_id']
-            
+
             movie.update()
-        
-        except: 
+
+        except BaseException:
             print('could not create object')
             abort(422)
 
         return jsonify({
-            'status': True, 
+            'status': True,
             'movie': [movie.format()]
         })
 
@@ -255,11 +254,10 @@ def create_app(test_config=None):
     @app.errorhandler(400)
     def bad_request(error):
         return jsonify({
-          "success": False,
-          "error": 400,
-          "message": "bad request"
-          }), 400
-
+            "success": False,
+            "error": 400,
+            "message": "bad request"
+        }), 400
 
     @app.errorhandler(404)
     def not_found(error):
@@ -275,8 +273,7 @@ def create_app(test_config=None):
             "success": False,
             "error": 405,
             "message": "method not allowed"
-            }), 405   
-
+        }), 405
 
     @app.errorhandler(422)
     def unprocessable(error):
@@ -293,7 +290,6 @@ def create_app(test_config=None):
             "error": 401,
             "message": "not authorized"
         }), 401
-
 
     return app
 
